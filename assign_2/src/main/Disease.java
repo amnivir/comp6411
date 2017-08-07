@@ -34,16 +34,21 @@ public abstract class Disease  implements Comparable<Disease>{
 		return name;
 	}
 	
-	public float getCertainityFactor(float freqOfDisease)
+	public float getCertainityFactor()
 	{
-		return (freqOfDisease/this.getDiseaseList().size())*100;
+		return ((float)this.getCount()/(float)this.getDiseaseList().size())*100;
 	}
 	
 	public int compareTo(Disease d) {
 
-		float compareQuantity = ((Disease) d).getCertainityFactor(d.getCount());
-
-		return compareQuantity - this.count;
+		float c1 = ((Disease) d).getCertainityFactor();
+		float c2 = this.getCertainityFactor();
+		if(c1>c2)
+			return 1;
+		if(c1<c2)
+			return -1;
+		else
+			return 0;
 	}
 
 	protected abstract List<String>  getDiseaseList();
@@ -78,9 +83,10 @@ public abstract class Disease  implements Comparable<Disease>{
 		
 		for(Disease d : disease)
 		{
-			System.out.println((d.getCertainityFactor(d.getCount())));
+			System.out.println((d.getCertainityFactor()));
 		}
 
+		System.out.println("Most Probable Disease: " + disease.get(0).getName()+ "  with Certainity Factor: " + disease.get(0).getCertainityFactor()+ " %");
 	}
 	
 	private static  void intersection( Disease d, List<String> symptoms) {   
