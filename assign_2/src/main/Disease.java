@@ -15,6 +15,7 @@ public abstract class Disease  implements Comparable<Disease>{
 
 	protected String name = "NONE";
 	protected int count = 0;
+	protected float certainityFactor = 0;
 	
 	protected List<String> diseases;
 
@@ -34,9 +35,14 @@ public abstract class Disease  implements Comparable<Disease>{
 		return name;
 	}
 	
+	public void calculateCertainityFactor()
+	{
+		certainityFactor = ((float)this.getCount()/(float)this.getDiseaseList().size())*100;
+	}
+	
 	public float getCertainityFactor()
 	{
-		return ((float)this.getCount()/(float)this.getDiseaseList().size())*100;
+		return certainityFactor;
 	}
 	
 	public int compareTo(Disease d) {
@@ -72,6 +78,7 @@ public abstract class Disease  implements Comparable<Disease>{
 		for(Disease d : disease)
 		{
 			intersection(d, symptoms);
+			d.calculateCertainityFactor();
 		}
 		
 		for(Disease d : disease)
@@ -79,14 +86,22 @@ public abstract class Disease  implements Comparable<Disease>{
 			System.out.println(d.getCount());
 		}
 		
+		Disease dis = getMostProbableDisease(disease);
+
+		System.out.println("Most Probable Disease: " + dis.getName()+ "  with Certainity Factor: " + dis.getCertainityFactor()+ " %");
+	}
+
+	/**
+	 * @param disease
+	 */
+	private static Disease getMostProbableDisease(List<Disease> disease) {
 		Collections.sort(disease);
 		
 		for(Disease d : disease)
 		{
-			System.out.println((d.getCertainityFactor()));
+			System.out.println(d.getName()+ "----->" +d.getCertainityFactor());
 		}
-
-		System.out.println("Most Probable Disease: " + disease.get(0).getName()+ "  with Certainity Factor: " + disease.get(0).getCertainityFactor()+ " %");
+		return disease.get(0);
 	}
 	
 	private static  void intersection( Disease d, List<String> symptoms) {   

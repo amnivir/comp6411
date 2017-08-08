@@ -1,35 +1,132 @@
 package main;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 
-public privileged aspect DiseaseDecisionProcess {
+public privileged aspect DiseaseDecisionProcess 
+{
+	private BufferedWriter writer;
+	final String logFile = "Aspect.log";
 
+	public DiseaseDecisionProcess()
+	{
+
+		try 
+		{
+		    writer = new BufferedWriter(new FileWriter(logFile));
+		     
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		};
+
+	}
 
 
 	before() : call(void *.incrementCount()) 
 	{
-		System.out.println(">Count Incremented : "+thisJoinPoint.getTarget().getClass().getName());
+		try {
+			writer.write(">>Count Incremented : "+thisJoinPoint.getTarget().getClass().getName() + "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 
 	before() : call (int *.getCount()) 
 	{
-		System.out.println(">Read count: " + thisJoinPoint.getTarget().getClass().getName());
+		try {
+			writer.write(">>Read count: " + thisJoinPoint.getTarget().getClass().getName()+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 
 	before() : call(void Disease.addSymtomsToList(..)) {
-		System.out.println(">Symptoms captured from cmd arguments : " + thisJoinPoint);
+		try {
+			writer.write(">>Symptoms captured from cmd arguments : " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 
 	before() : call(* Collections.sort(..)) {
-		System.out.println(">Sorting of diseases based on Certaininty Factor started : " + thisJoinPoint);
+		try {
+			writer.write(">>Start Sorting of diseases based on Certaininty Factor started : " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 
 	after() : call(* Collections.sort(..)) {
-		System.out.println("<Sorting of diseases based on Certaininty Factor Finished : " + thisJoinPoint);
+		try {
+			writer.write("<<Finished Sorting of diseases based on Certaininty Factor : " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
-	
+
 	before() : call(* *.intersection(..)) {
-		System.out.println(">Matching Patients Symptoms with existing Diseases Symptoms : " + thisJoinPoint);
+		try {
+			writer.write(">>Start Matching Patients Symptoms with existing Diseases Symptoms : " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 	
+	after() : call(* *.intersection(..)) {
+		try {
+			writer.write("<<Finished Matching Patients Symptoms with existing Diseases Symptoms : " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	before() : call(* *.calculateCertainityFactor(..)) {
+		try {
+			writer.write(">>Start calculating Certaininty Factor for a disease : " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	after() : call(* *.calculateCertainityFactor(..)) {
+		try {
+			writer.write("<<Finished calculating Certaininty Factor for a disease: " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	before() : call(* *.getMostProbableDisease(..)) {
+		try {
+			writer.write(">>Get most probable disease : " + thisJoinPoint+ "\n");
+			writer.flush();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+
 }
